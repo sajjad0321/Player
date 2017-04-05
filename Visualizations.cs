@@ -25,6 +25,10 @@ namespace Player
         {
             InitializeComponent();
             top = Properties.Settings.Default.topMost;
+            if (top == true)
+            {
+                SetVisualization(VIS_SPECTRUMLINEPEAK);
+            }
         }
 
         public void Stop()
@@ -96,11 +100,6 @@ namespace Player
             int peakL = 0;
             int peakR = 0;
             GetLevel(MainForm.stream, out peakL, out peakR);
-
-            if (top == true)
-            {
-                SetVisualization(VIS_SPECTRUMLINEPEAK);
-            }
 
             int progL = peakL;
             int progR = peakR;
