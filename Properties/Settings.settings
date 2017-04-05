@@ -1,0 +1,33 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Player.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Device" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">-1</Value>
+    </Setting>
+    <Setting Name="Proxy" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="RegEmail" Type="System.String" Scope="User">
+      <Value Profile="(Default)">wschneiderbauer@gmx.at</Value>
+    </Setting>
+    <Setting Name="RegCode" Type="System.String" Scope="User">
+      <Value Profile="(Default)">2X32283722152218</Value>
+    </Setting>
+    <Setting Name="visColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">LimeGreen</Value>
+    </Setting>
+    <Setting Name="visColor2" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">HotPink</Value>
+    </Setting>
+    <Setting Name="visColor3" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Red</Value>
+    </Setting>
+    <Setting Name="visColorbg" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">DeepSkyBlue</Value>
+    </Setting>
+    <Setting Name="topMost" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
