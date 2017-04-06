@@ -24,9 +24,15 @@
       <Value Profile="(Default)">Red</Value>
     </Setting>
     <Setting Name="visColorbg" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">DeepSkyBlue</Value>
+      <Value Profile="(Default)">Transparent</Value>
     </Setting>
     <Setting Name="topMost" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="configvis" Type="System.String" Scope="User">
+      <Value Profile="(Default)">BAR</Value>
+    </Setting>
+    <Setting Name="chkFullscreen" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>

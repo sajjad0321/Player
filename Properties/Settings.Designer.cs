@@ -109,7 +109,7 @@ namespace Player.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("DeepSkyBlue")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Transparent")]
         public global::System.Drawing.Color visColorbg {
             get {
                 return ((global::System.Drawing.Color)(this["visColorbg"]));
@@ -128,6 +128,30 @@ namespace Player.Properties {
             }
             set {
                 this["topMost"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("BAR")]
+        public string configvis {
+            get {
+                return ((string)(this["configvis"]));
+            }
+            set {
+                this["configvis"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool chkFullscreen {
+            get {
+                return ((bool)(this["chkFullscreen"]));
+            }
+            set {
+                this["chkFullscreen"] = value;
             }
         }
     }

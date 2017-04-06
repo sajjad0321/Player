@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Visualizations));
             this.timer = new System.Windows.Forms.Timer(this.components);
             this.pbVis = new System.Windows.Forms.PictureBox();
             this.lbldBL = new System.Windows.Forms.Label();
@@ -62,7 +63,7 @@
             this.pbVis.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pbVis.Location = new System.Drawing.Point(0, 24);
             this.pbVis.Name = "pbVis";
-            this.pbVis.Size = new System.Drawing.Size(700, 326);
+            this.pbVis.Size = new System.Drawing.Size(623, 202);
             this.pbVis.TabIndex = 29;
             this.pbVis.TabStop = false;
             // 
@@ -70,7 +71,7 @@
             // 
             this.lbldBL.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lbldBL.AutoSize = true;
-            this.lbldBL.Location = new System.Drawing.Point(12, 305);
+            this.lbldBL.Location = new System.Drawing.Point(12, 181);
             this.lbldBL.Name = "lbldBL";
             this.lbldBL.Size = new System.Drawing.Size(41, 13);
             this.lbldBL.TabIndex = 21;
@@ -81,7 +82,7 @@
             // 
             this.lbldBR.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lbldBR.AutoSize = true;
-            this.lbldBR.Location = new System.Drawing.Point(12, 328);
+            this.lbldBR.Location = new System.Drawing.Point(12, 204);
             this.lbldBR.Name = "lbldBR";
             this.lbldBR.Size = new System.Drawing.Size(41, 13);
             this.lbldBR.TabIndex = 22;
@@ -92,7 +93,7 @@
             // 
             this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(654, 289);
+            this.label5.Location = new System.Drawing.Point(577, 165);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(32, 13);
             this.label5.TabIndex = 27;
@@ -103,7 +104,7 @@
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(673, 328);
+            this.label4.Location = new System.Drawing.Point(596, 204);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(15, 13);
             this.label4.TabIndex = 26;
@@ -114,10 +115,10 @@
             // 
             this.prgL.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.prgL.Location = new System.Drawing.Point(55, 305);
+            this.prgL.Location = new System.Drawing.Point(55, 181);
             this.prgL.Maximum = 65535;
             this.prgL.Name = "prgL";
-            this.prgL.Size = new System.Drawing.Size(612, 13);
+            this.prgL.Size = new System.Drawing.Size(535, 13);
             this.prgL.TabIndex = 23;
             this.prgL.Visible = false;
             // 
@@ -125,7 +126,7 @@
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(673, 305);
+            this.label3.Location = new System.Drawing.Point(596, 181);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(13, 13);
             this.label3.TabIndex = 25;
@@ -136,10 +137,10 @@
             // 
             this.prgR.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.prgR.Location = new System.Drawing.Point(55, 328);
+            this.prgR.Location = new System.Drawing.Point(55, 204);
             this.prgR.Maximum = 65535;
             this.prgR.Name = "prgR";
-            this.prgR.Size = new System.Drawing.Size(612, 13);
+            this.prgR.Size = new System.Drawing.Size(535, 13);
             this.prgR.TabIndex = 24;
             this.prgR.Visible = false;
             // 
@@ -149,7 +150,7 @@
             this.visualizationToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(700, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(623, 24);
             this.menuStrip1.TabIndex = 30;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -222,7 +223,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(700, 350);
+            this.ClientSize = new System.Drawing.Size(623, 226);
             this.Controls.Add(this.pbVis);
             this.Controls.Add(this.lbldBL);
             this.Controls.Add(this.lbldBR);
@@ -232,12 +233,14 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.prgR);
             this.Controls.Add(this.menuStrip1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(285, 150);
             this.Name = "Visualizations";
             this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Visualizations";
             this.TransparencyKey = System.Drawing.Color.Black;
             ((System.ComponentModel.ISupportInitialize)(this.pbVis)).EndInit();

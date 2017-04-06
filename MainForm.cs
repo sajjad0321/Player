@@ -6,6 +6,10 @@ using Un4seen.Bass;
 using Un4seen.Bass.AddOn.Tags;
 using System.Runtime.InteropServices;
 using System.Reflection;
+using CSCore.SoundIn;
+using CSCore.Codecs.WAV;
+using System.Threading;
+using aPlay;
 
 namespace Player
 {
@@ -28,6 +32,9 @@ namespace Player
 
         IntPtr userAgentPtr;
         IntPtr proxyPtr;
+        private WasapiLoopbackCapture capture;
+        private WaveWriter w;
+        KeyboardHook keyHook = new KeyboardHook();
 
         public MainForm()
         {
@@ -38,6 +45,19 @@ namespace Player
             ProcessCmdLine();
 
             Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_NET_PLAYLIST, 1);
+            keyHook.KeyPressed += KeyHook_KeyPressed;
+            keyHook.RegisterHotKey(Player.ModifierKeys.Alt, Keys.P);
+            
+        }
+
+        private void KeyHook_KeyPressed(object sender, KeyPressedEventArgs e)
+        {
+            if (stopped)
+                Play();
+            else if (paused)
+                Resume();
+            else if (!stopped && !paused)
+                Pause();
         }
 
         private void BuildFilter() //build the filter string for openFileDialog
@@ -221,6 +241,7 @@ namespace Player
 
         private void btnPlay_Click(object sender, EventArgs e)
         {
+            //StartRecording("google.wav");
             if (stopped)
                 Play();
             else if (paused)
@@ -585,6 +606,66 @@ namespace Player
 
         private void lstPlaylist_MouseDoubleClick(object sender, MouseEventArgs e)
         {
+        }
+
+        private void MainForm_SizeChanged(object sender, EventArgs e)
+        {
+            if (WindowState == FormWindowState.Minimized)
+            {
+                notifyIcon1.Visible = true;
+                Hide();
+            }
+        }
+
+        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            notifyIcon1.Visible = false;
+            Show();
+        }
+
+        public void CaptureAudio(string Name)
+        {
+            capture = new WasapiLoopbackCapture();
+            capture.Initialize();
+            w = new WaveWriter(Name, capture.WaveFormat);
+            capture.DataAvailable += (s, capData) =>
+            {
+                w.Write(capData.Data, capData.Offset, capData.ByteCount);
+            };
+            capture.Start();
+            Thread.Sleep(4000);
+            capture.Stop();
+        }
+
+        private static void CaptureG(int index)
+        {
+            string Name = string.Format("dump-{0}.wav", index);
+
+            using (WasapiCapture capture = new WasapiLoopbackCapture())
+            {
+                capture.Initialize();
+                using (var w = new WaveWriter(Name, capture.WaveFormat))
+                {
+                    capture.DataAvailable += (s, capData) => w.Write(capData.Data, capData.Offset, capData.ByteCount);
+                    capture.Start();
+
+                    Thread.Sleep(10000);
+
+                    capture.Stop();
+                }
+            }
+        }
+
+        public void StartRecording(string Name)
+        {
+            new Thread(delegate () { CaptureAudio(Name); }).Start();
+        }
+
+        public void StopCapture()
+        {
+            capture.Stop();
+            capture.Dispose();
+            w.Dispose();
         }
     }
 }

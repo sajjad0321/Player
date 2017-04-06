@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsForm));
             this.label1 = new System.Windows.Forms.Label();
             this.cmbDevice = new System.Windows.Forms.ComboBox();
             this.btnOK = new System.Windows.Forms.Button();
@@ -35,7 +36,7 @@
             this.txtProxy = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.cd = new System.Windows.Forms.ColorDialog();
-            this.txtvisColorbg = new System.Windows.Forms.TextBox();
+            this.txtvisColor = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.lblvisBack = new System.Windows.Forms.Label();
             this.chooseVis = new System.Windows.Forms.Label();
@@ -48,6 +49,7 @@
             this.label6 = new System.Windows.Forms.Label();
             this.txtvisbg = new System.Windows.Forms.TextBox();
             this.visonTop = new System.Windows.Forms.CheckBox();
+            this.chkfull = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
@@ -114,18 +116,18 @@
             this.label3.Text = "user:pass@server:port";
             this.label3.Visible = false;
             // 
-            // txtvisColorbg
+            // txtvisColor
             // 
-            this.txtvisColorbg.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtvisColor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtvisColorbg.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.txtvisColorbg.Location = new System.Drawing.Point(95, 61);
-            this.txtvisColorbg.Name = "txtvisColorbg";
-            this.txtvisColorbg.ReadOnly = true;
-            this.txtvisColorbg.Size = new System.Drawing.Size(191, 20);
-            this.txtvisColorbg.TabIndex = 7;
-            this.txtvisColorbg.Text = " ";
-            this.txtvisColorbg.MouseClick += new System.Windows.Forms.MouseEventHandler(this.textBox1_MouseClick);
+            this.txtvisColor.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.txtvisColor.Location = new System.Drawing.Point(95, 61);
+            this.txtvisColor.Name = "txtvisColor";
+            this.txtvisColor.ReadOnly = true;
+            this.txtvisColor.Size = new System.Drawing.Size(191, 20);
+            this.txtvisColor.TabIndex = 7;
+            this.txtvisColor.Text = " ";
+            this.txtvisColor.MouseClick += new System.Windows.Forms.MouseEventHandler(this.textBox1_MouseClick);
             // 
             // label2
             // 
@@ -260,13 +262,25 @@
             // visonTop
             // 
             this.visonTop.AutoSize = true;
-            this.visonTop.Location = new System.Drawing.Point(21, 242);
+            this.visonTop.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.55F);
+            this.visonTop.Location = new System.Drawing.Point(186, 165);
             this.visonTop.Name = "visonTop";
-            this.visonTop.Size = new System.Drawing.Size(59, 17);
+            this.visonTop.Size = new System.Drawing.Size(63, 19);
             this.visonTop.TabIndex = 18;
             this.visonTop.Text = "OnTop";
             this.visonTop.UseVisualStyleBackColor = true;
             this.visonTop.CheckedChanged += new System.EventHandler(this.visonTop_CheckedChanged);
+            // 
+            // chkfull
+            // 
+            this.chkfull.AutoSize = true;
+            this.chkfull.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.55F);
+            this.chkfull.Location = new System.Drawing.Point(95, 165);
+            this.chkfull.Name = "chkfull";
+            this.chkfull.Size = new System.Drawing.Size(85, 19);
+            this.chkfull.TabIndex = 19;
+            this.chkfull.Text = "FullScreen";
+            this.chkfull.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 
@@ -274,6 +288,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.ClientSize = new System.Drawing.Size(298, 275);
+            this.Controls.Add(this.chkfull);
             this.Controls.Add(this.visonTop);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.txtvisbg);
@@ -285,7 +300,7 @@
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.chooseVis);
             this.Controls.Add(this.lblvisBack);
-            this.Controls.Add(this.txtvisColorbg);
+            this.Controls.Add(this.txtvisColor);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.txtProxy);
             this.Controls.Add(this.label2);
@@ -294,6 +309,7 @@
             this.Controls.Add(this.cmbDevice);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(310, 130);
@@ -318,7 +334,7 @@
         private System.Windows.Forms.ColorDialog cd;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label lblvisBack;
-        internal System.Windows.Forms.TextBox txtvisColorbg;
+        internal System.Windows.Forms.TextBox txtvisColor;
         private System.Windows.Forms.Label chooseVis;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Label label4;
@@ -329,5 +345,6 @@
         private System.Windows.Forms.Label label6;
         internal System.Windows.Forms.TextBox txtvisbg;
         private System.Windows.Forms.CheckBox visonTop;
+        private System.Windows.Forms.CheckBox chkfull;
     }
 }

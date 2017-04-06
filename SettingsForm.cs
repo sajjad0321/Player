@@ -19,16 +19,22 @@ namespace Player
             InitializeComponent();
 
             LoadDevices();
-            
+
+            comboBox1.SelectedItem = Properties.Settings.Default.configvis;
             txtProxy.Text = Properties.Settings.Default.Proxy;
-            txtvisColorbg.BackColor = Properties.Settings.Default.visColor;
+            txtvisColor.BackColor = Properties.Settings.Default.visColor;
             txtvisColor2.BackColor = Properties.Settings.Default.visColor2;
             txtvisColor3.BackColor = Properties.Settings.Default.visColor3;
             bool top = Properties.Settings.Default.topMost;
+            bool fullScreen = Properties.Settings.Default.chkFullscreen;
             //txtvisbg.BackColor = Properties.Settings.Default.visColorbg;
             if (top == true)
                 visonTop.Checked = true;
             else visonTop.Checked = false;
+
+            if (fullScreen == true)
+                chkfull.Checked = true;
+            else chkfull.Checked = false;
         }
 
         private void LoadDevices()
@@ -52,12 +58,18 @@ namespace Player
         private void btnOK_Click(object sender, EventArgs e)
         {
             Properties.Settings.Default.Device = cmbDevice.SelectedIndex + 1;
+            Properties.Settings.Default.configvis = comboBox1.SelectedItem.ToString();
             Properties.Settings.Default.Proxy = txtProxy.Text;
-            Properties.Settings.Default.visColor = cd.Color;
-            if (visonTop.Checked == true)
+            Properties.Settings.Default.visColor = txtvisColor.BackColor;
+            Properties.Settings.Default.visColor2 = txtvisColor2.BackColor;
+            Properties.Settings.Default.visColor3 = txtvisColor3.BackColor;
+            Properties.Settings.Default.visColorbg = txtvisbg.BackColor;
+            if (visonTop.Checked == true) // setting Styles 
                 Properties.Settings.Default.topMost = true;
             else Properties.Settings.Default.topMost = false;
-
+            if (chkfull.Checked == true) // setting FullScreen Visualization 
+                Properties.Settings.Default.chkFullscreen = true;
+            else Properties.Settings.Default.chkFullscreen = false;
             Properties.Settings.Default.Save();
         }
 
@@ -65,13 +77,13 @@ namespace Player
         {
             if (cd.ShowDialog() == DialogResult.OK)
             {
-                txtvisColorbg.BackColor = cd.Color;
+                txtvisColor.BackColor = cd.Color;
             }
         }
 
         private void comboBox1_TextChanged(object sender, EventArgs e)
         {
-           
+           // MessageBox.Show(comboBox1.SelectedItem.ToString());
         }
 
         private void btnDefault_Click(object sender, EventArgs e)
@@ -84,6 +96,8 @@ namespace Player
             Properties.Settings.Default.visColor2 = Color.HotPink;
             Properties.Settings.Default.visColor3 = Color.Red;
             Properties.Settings.Default.visColorbg = Color.Transparent;
+            Properties.Settings.Default.configvis = "BAR";
+            Properties.Settings.Default.chkFullscreen = false;
             Properties.Settings.Default.Save();
             MessageBox.Show("Setting Restored",Application.ProductName);
         }

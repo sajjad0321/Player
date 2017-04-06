@@ -69,6 +69,7 @@
             this.btnPlay = new System.Windows.Forms.Button();
             this.btnStop = new System.Windows.Forms.Button();
             this.wmp = new AxWMPLib.AxWindowsMediaPlayer();
+            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.trkPos)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trkVol)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -217,7 +218,9 @@
             // 
             this.addFilesToolStripMenuItem.Image = global::Player.Properties.Resources.cd_go;
             this.addFilesToolStripMenuItem.Name = "addFilesToolStripMenuItem";
-            this.addFilesToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.addFilesToolStripMenuItem.ShortcutKeyDisplayString = " ";
+            this.addFilesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.addFilesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.addFilesToolStripMenuItem.Text = "Add Files";
             this.addFilesToolStripMenuItem.Click += new System.EventHandler(this.addFilesToolStripMenuItem_Click);
             // 
@@ -238,7 +241,11 @@
             // 
             this.openPlaylistToolStripMenuItem.Image = global::Player.Properties.Resources.table_go;
             this.openPlaylistToolStripMenuItem.Name = "openPlaylistToolStripMenuItem";
-            this.openPlaylistToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.openPlaylistToolStripMenuItem.ShortcutKeyDisplayString = "";
+            this.openPlaylistToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.O)));
+            this.openPlaylistToolStripMenuItem.ShowShortcutKeys = false;
+            this.openPlaylistToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.openPlaylistToolStripMenuItem.Text = "Open Playlist";
             this.openPlaylistToolStripMenuItem.Click += new System.EventHandler(this.openPlaylistToolStripMenuItem_Click);
             // 
@@ -401,6 +408,12 @@
             this.wmp.TabIndex = 25;
             this.wmp.Visible = false;
             // 
+            // notifyIcon1
+            // 
+            this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
+            this.notifyIcon1.Text = "notifyIcon1";
+            this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -420,11 +433,14 @@
             this.Controls.Add(this.btnStop);
             this.Controls.Add(this.trkPos);
             this.Controls.Add(this.chkRepeatTrack);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.MinimumSize = new System.Drawing.Size(400, 220);
             this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Player";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+            this.SizeChanged += new System.EventHandler(this.MainForm_SizeChanged);
             ((System.ComponentModel.ISupportInitialize)(this.trkPos)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trkVol)).EndInit();
             this.menuStrip1.ResumeLayout(false);
@@ -477,5 +493,6 @@
         private System.Windows.Forms.CheckBox chkRandom;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private AxWMPLib.AxWindowsMediaPlayer wmp;
+        private System.Windows.Forms.NotifyIcon notifyIcon1;
     }
 }

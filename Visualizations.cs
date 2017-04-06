@@ -12,7 +12,10 @@ namespace Player
         SettingsForm sForm = new SettingsForm();
         int selectedVis = 0;
         Color tc, c2, c3, cbg;
-        bool top;
+        bool top, fullScreen;
+
+        string screenWidth = Screen.PrimaryScreen.Bounds.Width.ToString();
+        string screenHeight = Screen.PrimaryScreen.Bounds.Height.ToString();
 
         const int VIS_SPECTRUM = 0;
         const int VIS_SPECTRUMLINE = 1;
@@ -20,14 +23,26 @@ namespace Player
         const int VIS_SPECTRUMBAR = 3;
         const int VIS_SPECTRUMTEXT = 4;
         const int VIS_SPECTRUMLINEPEAK = 5;
-        
+
         public Visualizations()
         {
             InitializeComponent();
             top = Properties.Settings.Default.topMost;
+            fullScreen = Properties.Settings.Default.chkFullscreen;
+
             if (top == true)
             {
-                SetVisualization(VIS_SPECTRUMLINEPEAK);
+                Location = new Point(725, 515);
+                FormBorderStyle = FormBorderStyle.None;
+                TopMost = true;
+                menuStrip1.Visible = false;
+            }
+            if (fullScreen == true)
+            {
+                menuStrip1.Visible = false;
+                FormBorderStyle = FormBorderStyle.None;
+                Width = Screen.PrimaryScreen.Bounds.Width;
+                Height = Screen.PrimaryScreen.Bounds.Height;
             }
         }
 
@@ -117,7 +132,12 @@ namespace Player
             tc = Properties.Settings.Default.visColor;
             c2 = Properties.Settings.Default.visColor2;
             c3 = Properties.Settings.Default.visColor3;
-            cbg = Properties.Settings.Default.visColorbg;
+            cbg = Color.Transparent;
+
+
+
+            //changing visualization from settings... ☺
+            settingVis();
 
             switch (selectedVis)
             {
@@ -143,7 +163,7 @@ namespace Player
                     break;
                 case VIS_SPECTRUMLINEPEAK:
                     pbVis.Image = vis.CreateSpectrumLinePeak(MainForm.stream, pbVis.Width, pbVis.Height,
-                        tc, c2, c3, cbg, 6, 4, 3, 20,true,false,true);
+                        tc, c2, c3, cbg, 6, 4, 3, 20, true, false, true);
                     break;
             }
         }
@@ -220,6 +240,35 @@ namespace Player
         private void closeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void settingVis()
+        {
+            string changVis = Properties.Settings.Default.configvis;
+            if (changVis == "BAR")
+            {
+                SetVisualization(VIS_SPECTRUMBAR);
+            }
+            else if (changVis == "SIMPLE")
+            {
+                SetVisualization(VIS_SPECTRUM);
+            }
+            if (changVis == "WAVE")
+            {
+                SetVisualization(VIS_SPECTRUMWAVE);
+            }
+            if (changVis == "LINE")
+            {
+                SetVisualization(VIS_SPECTRUMLINE);
+            }
+            if (changVis == "TEXT")
+            {
+                SetVisualization(VIS_SPECTRUMTEXT);
+            }
+            if (changVis == "LINEPEAK")
+            {
+                SetVisualization(VIS_SPECTRUMLINEPEAK);
+            }
         }
     }
 }
