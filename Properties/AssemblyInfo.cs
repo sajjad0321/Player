@@ -6,7 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Player")]
-[assembly: AssemblyDescription("A simple media player using the BASS.NET library.\r\n\r\nhttp://un4seen.com\r\n\nSAJJADJAVED ☺")]
+[assembly:
+    AssemblyDescription(
+        "A simple media player using the BASS.NET library.\r\n\r\nhttp://un4seen.com\r\n\nSAJJADJAVED ☺")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Player")]

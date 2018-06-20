@@ -32,7 +32,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.cmbDevice = new System.Windows.Forms.ComboBox();
             this.btnOK = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
             this.txtProxy = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.cd = new System.Windows.Forms.ColorDialog();
@@ -40,7 +39,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.lblvisBack = new System.Windows.Forms.Label();
             this.chooseVis = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.cmbvis = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.txtvisColor2 = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
@@ -50,6 +49,10 @@
             this.txtvisbg = new System.Windows.Forms.TextBox();
             this.visonTop = new System.Windows.Forms.CheckBox();
             this.chkfull = new System.Windows.Forms.CheckBox();
+            this.numDistance = new System.Windows.Forms.NumericUpDown();
+            this.numLine = new System.Windows.Forms.NumericUpDown();
+            ((System.ComponentModel.ISupportInitialize)(this.numDistance)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numLine)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -77,24 +80,15 @@
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(155, 238);
+            this.btnOK.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnOK.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.75F);
+            this.btnOK.Location = new System.Drawing.Point(150, 238);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(65, 23);
             this.btnOK.TabIndex = 2;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(89, 238);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(65, 23);
-            this.btnCancel.TabIndex = 3;
-            this.btnCancel.Text = "Cancel";
-            this.btnCancel.UseVisualStyleBackColor = true;
             // 
             // txtProxy
             // 
@@ -159,24 +153,23 @@
             this.chooseVis.TabIndex = 9;
             this.chooseVis.Text = "Choose Vis:";
             // 
-            // comboBox1
+            // cmbvis
             // 
-            this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.cmbvis.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
+            this.cmbvis.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbvis.FormattingEnabled = true;
+            this.cmbvis.Items.AddRange(new object[] {
             "BAR",
             "TEXT",
             "SIMPLE",
             "WAVE",
             "LINE",
             "LINEPEAK"});
-            this.comboBox1.Location = new System.Drawing.Point(95, 33);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(191, 21);
-            this.comboBox1.TabIndex = 10;
-            this.comboBox1.TextChanged += new System.EventHandler(this.comboBox1_TextChanged);
+            this.cmbvis.Location = new System.Drawing.Point(95, 33);
+            this.cmbvis.Name = "cmbvis";
+            this.cmbvis.Size = new System.Drawing.Size(191, 21);
+            this.cmbvis.TabIndex = 10;
             // 
             // label4
             // 
@@ -205,7 +198,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.95F);
-            this.label5.Location = new System.Drawing.Point(13, 142);
+            this.label5.Location = new System.Drawing.Point(13, 140);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(76, 15);
             this.label5.TabIndex = 14;
@@ -228,6 +221,8 @@
             // 
             this.btnDefault.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnDefault.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnDefault.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnDefault.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.75F);
             this.btnDefault.Location = new System.Drawing.Point(221, 238);
             this.btnDefault.Name = "btnDefault";
             this.btnDefault.Size = new System.Drawing.Size(65, 23);
@@ -282,12 +277,43 @@
             this.chkfull.Text = "FullScreen";
             this.chkfull.UseVisualStyleBackColor = true;
             // 
+            // numDistance
+            // 
+            this.numDistance.Location = new System.Drawing.Point(137, 190);
+            this.numDistance.Name = "numDistance";
+            this.numDistance.Size = new System.Drawing.Size(36, 20);
+            this.numDistance.TabIndex = 20;
+            this.numDistance.Value = new decimal(new int[] {
+            3,
+            0,
+            0,
+            0});
+            // 
+            // numLine
+            // 
+            this.numLine.Increment = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            this.numLine.Location = new System.Drawing.Point(95, 190);
+            this.numLine.Name = "numLine";
+            this.numLine.Size = new System.Drawing.Size(36, 20);
+            this.numLine.TabIndex = 21;
+            this.numLine.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.ClientSize = new System.Drawing.Size(298, 275);
+            this.Controls.Add(this.numLine);
+            this.Controls.Add(this.numDistance);
             this.Controls.Add(this.chkfull);
             this.Controls.Add(this.visonTop);
             this.Controls.Add(this.label6);
@@ -297,14 +323,13 @@
             this.Controls.Add(this.txtvisColor3);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.txtvisColor2);
-            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.cmbvis);
             this.Controls.Add(this.chooseVis);
             this.Controls.Add(this.lblvisBack);
             this.Controls.Add(this.txtvisColor);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.txtProxy);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.cmbDevice);
             this.Controls.Add(this.label1);
@@ -318,6 +343,8 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Settings";
+            ((System.ComponentModel.ISupportInitialize)(this.numDistance)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numLine)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -328,7 +355,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox cmbDevice;
         private System.Windows.Forms.Button btnOK;
-        private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.TextBox txtProxy;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ColorDialog cd;
@@ -336,7 +362,7 @@
         private System.Windows.Forms.Label lblvisBack;
         internal System.Windows.Forms.TextBox txtvisColor;
         private System.Windows.Forms.Label chooseVis;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox cmbvis;
         private System.Windows.Forms.Label label4;
         internal System.Windows.Forms.TextBox txtvisColor2;
         private System.Windows.Forms.Label label5;
@@ -346,5 +372,7 @@
         internal System.Windows.Forms.TextBox txtvisbg;
         private System.Windows.Forms.CheckBox visonTop;
         private System.Windows.Forms.CheckBox chkfull;
+        protected internal System.Windows.Forms.NumericUpDown numDistance;
+        protected internal System.Windows.Forms.NumericUpDown numLine;
     }
 }

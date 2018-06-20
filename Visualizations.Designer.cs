@@ -54,18 +54,19 @@
             // 
             // timer
             // 
-            this.timer.Interval = 35;
+            this.timer.Interval = 20;
             this.timer.Tick += new System.EventHandler(this.timer_Tick);
             // 
             // pbVis
             // 
             this.pbVis.BackColor = System.Drawing.Color.Black;
             this.pbVis.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pbVis.Location = new System.Drawing.Point(0, 24);
+            this.pbVis.Location = new System.Drawing.Point(0, 0);
             this.pbVis.Name = "pbVis";
-            this.pbVis.Size = new System.Drawing.Size(623, 202);
+            this.pbVis.Size = new System.Drawing.Size(623, 226);
             this.pbVis.TabIndex = 29;
             this.pbVis.TabStop = false;
+            this.pbVis.WaitOnLoad = true;
             // 
             // lbldBL
             // 
@@ -153,6 +154,7 @@
             this.menuStrip1.Size = new System.Drawing.Size(623, 24);
             this.menuStrip1.TabIndex = 30;
             this.menuStrip1.Text = "menuStrip1";
+            this.menuStrip1.Visible = false;
             // 
             // visualizationToolStripMenuItem
             // 

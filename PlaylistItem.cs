@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace Player
 {
@@ -15,7 +11,7 @@ namespace Player
         public const int TYPE_STREAM_FILE = 0;
         public const int TYPE_STREAM_URL = 1;
         public const int TYPE_MUSIC = 2;
-        
+
         public PlaylistItem(string track, string title, string artist, string album, string path)
         {
             Track = track;

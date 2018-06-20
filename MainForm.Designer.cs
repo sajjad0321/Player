@@ -47,6 +47,7 @@
             this.addFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addUrlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.loopbackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openPlaylistToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.savePlaylistToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -206,6 +207,7 @@
             this.addFilesToolStripMenuItem,
             this.addUrlToolStripMenuItem,
             this.toolStripSeparator1,
+            this.loopbackToolStripMenuItem,
             this.openPlaylistToolStripMenuItem,
             this.savePlaylistToolStripMenuItem,
             this.toolStripSeparator2,
@@ -220,7 +222,7 @@
             this.addFilesToolStripMenuItem.Name = "addFilesToolStripMenuItem";
             this.addFilesToolStripMenuItem.ShortcutKeyDisplayString = " ";
             this.addFilesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.addFilesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.addFilesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.addFilesToolStripMenuItem.Text = "Add Files";
             this.addFilesToolStripMenuItem.Click += new System.EventHandler(this.addFilesToolStripMenuItem_Click);
             // 
@@ -228,14 +230,23 @@
             // 
             this.addUrlToolStripMenuItem.Image = global::Player.Properties.Resources.world_go;
             this.addUrlToolStripMenuItem.Name = "addUrlToolStripMenuItem";
-            this.addUrlToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.addUrlToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.addUrlToolStripMenuItem.Text = "Add URL";
             this.addUrlToolStripMenuItem.Click += new System.EventHandler(this.addUrlToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(140, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            // 
+            // loopbackToolStripMenuItem
+            // 
+            this.loopbackToolStripMenuItem.BackColor = System.Drawing.Color.Transparent;
+            this.loopbackToolStripMenuItem.CheckOnClick = true;
+            this.loopbackToolStripMenuItem.Name = "loopbackToolStripMenuItem";
+            this.loopbackToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.loopbackToolStripMenuItem.Text = "Loopback";
+            this.loopbackToolStripMenuItem.Click += new System.EventHandler(this.loopbackToolStripMenuItem_Click);
             // 
             // openPlaylistToolStripMenuItem
             // 
@@ -245,7 +256,7 @@
             this.openPlaylistToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.O)));
             this.openPlaylistToolStripMenuItem.ShowShortcutKeys = false;
-            this.openPlaylistToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.openPlaylistToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openPlaylistToolStripMenuItem.Text = "Open Playlist";
             this.openPlaylistToolStripMenuItem.Click += new System.EventHandler(this.openPlaylistToolStripMenuItem_Click);
             // 
@@ -253,20 +264,20 @@
             // 
             this.savePlaylistToolStripMenuItem.Image = global::Player.Properties.Resources.table_save;
             this.savePlaylistToolStripMenuItem.Name = "savePlaylistToolStripMenuItem";
-            this.savePlaylistToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.savePlaylistToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.savePlaylistToolStripMenuItem.Text = "Save Playlist";
             this.savePlaylistToolStripMenuItem.Click += new System.EventHandler(this.savePlaylistToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(140, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Image = global::Player.Properties.Resources.cross;
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -412,7 +423,7 @@
             // 
             this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
             this.notifyIcon1.Text = "notifyIcon1";
-            this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
+            this.notifyIcon1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseClick);
             // 
             // MainForm
             // 
@@ -494,5 +505,6 @@
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private AxWMPLib.AxWindowsMediaPlayer wmp;
         private System.Windows.Forms.NotifyIcon notifyIcon1;
+        private System.Windows.Forms.ToolStripMenuItem loopbackToolStripMenuItem;
     }
 }

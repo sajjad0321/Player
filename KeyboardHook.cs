@@ -12,6 +12,7 @@ namespace Player
         // Registers a hot key with Windows.
         [DllImport("user32.dll")]
         private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
+
         // Unregisters the hot key with Windows.
         [DllImport("user32.dll")]
         private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
@@ -41,8 +42,8 @@ namespace Player
                 if (m.Msg == WM_HOTKEY)
                 {
                     // get the keys.
-                    Keys key = (Keys)(((int)m.LParam >> 16) & 0xFFFF);
-                    ModifierKeys modifier = (ModifierKeys)((int)m.LParam & 0xFFFF);
+                    Keys key = (Keys) (((int) m.LParam >> 16) & 0xFFFF);
+                    ModifierKeys modifier = (ModifierKeys) ((int) m.LParam & 0xFFFF);
 
                     // invoke the event to notify the parent.
                     if (KeyPressed != null)
@@ -68,7 +69,7 @@ namespace Player
         public KeyboardHook()
         {
             // register the event of the inner native window.
-            _window.KeyPressed += delegate (object sender, KeyPressedEventArgs args)
+            _window.KeyPressed += delegate(object sender, KeyPressedEventArgs args)
             {
                 if (KeyPressed != null)
                     KeyPressed(this, args);
@@ -86,8 +87,8 @@ namespace Player
             _currentId = _currentId + 1;
 
             // register the hot key.
-            if (!RegisterHotKey(_window.Handle, _currentId, (uint)modifier, (uint)key))
-                throw new InvalidOperationException("Couldn’t register the hot key.");
+            if (!RegisterHotKey(_window.Handle, _currentId, (uint) modifier, (uint) key))
+                MessageBox.Show("Couldn’t register the hot key.", Application.ProductName);
         }
 
         /// <summary>

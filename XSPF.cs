@@ -39,7 +39,7 @@ namespace Player
 
                                         if (!System.IO.File.Exists(pa)) continue; //ignore stale entries
                                     }
-                                    
+
                                     ret.Add(GetTags(pa));
 
                                     trackFound = false;
@@ -47,11 +47,13 @@ namespace Player
                                 break;
                         }
                     }
-                };
+                }
+                ;
             }
             catch (Exception e)
             {
-                MessageBox.Show("Error: " + e.Message + e.StackTrace, "Error loading playlist", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error: " + e.Message + e.StackTrace, "Error loading playlist", MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
 
             return ret;
@@ -85,11 +87,13 @@ namespace Player
 
                     writer.WriteEndElement();
                     writer.WriteEndDocument();
-                };
+                }
+                ;
             }
             catch (Exception e)
             {
-                MessageBox.Show("Error: " + e.Message + e.StackTrace, "Error saving playlist", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error: " + e.Message + e.StackTrace, "Error saving playlist", MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
 
@@ -97,13 +101,14 @@ namespace Player
         {
             TAG_INFO tagInfo = new TAG_INFO(path);
 
-            if (!new System.Text.RegularExpressions.Regex("^(ftp|http)").IsMatch(path))
+            if (!new System.Text.RegularExpressions.Regex("^(ftp|http|https)").IsMatch(path))
             {
                 string extension = new System.IO.FileInfo(path).Extension;
-                
-                if (!MainForm.supportedExts.Contains("*" + extension.ToLower()))
+
+                if (!MainForm.SupportedExts.Contains("*" + extension.ToLower()))
                 {
-                    MessageBox.Show("File \"" + path + "\" is an unsupported file type.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("File \"" + path + "\" is an unsupported file type.", "Error", MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
                     return null;
                 }
 
@@ -111,7 +116,7 @@ namespace Player
 
                 if (Bass.SupportedMusicExtensions.Contains("*" + extension))
                     type = PlaylistItem.TYPE_MUSIC;
-                
+
                 tagInfo = BassTags.BASS_TAG_GetFromFile(path);
 
                 if (tagInfo == null)
@@ -121,11 +126,12 @@ namespace Player
             }
             else
             {
-                if (MainForm.stream != 0)
+                if (MainForm.Stream != 0)
                 {
-                    bool tagsAvailable = BassTags.BASS_TAG_GetFromURL(MainForm.stream, tagInfo);
+                    bool tagsAvailable = BassTags.BASS_TAG_GetFromURL(MainForm.Stream, tagInfo);
                     if (tagsAvailable)
-                        return new PlaylistItem(tagInfo.track, tagInfo.title, tagInfo.artist, tagInfo.album, path, PlaylistItem.TYPE_STREAM_URL);
+                        return new PlaylistItem(tagInfo.track, tagInfo.title, tagInfo.artist, tagInfo.album, path,
+                            PlaylistItem.TYPE_STREAM_URL);
                     else
                         return new PlaylistItem("?", "?", "?", "?", path, PlaylistItem.TYPE_STREAM_URL);
                 }

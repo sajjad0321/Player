@@ -12,7 +12,7 @@ namespace Player
     public partial class AddUrlForm : Form
     {
         public string path = "";
-        
+
         public AddUrlForm()
         {
             InitializeComponent();

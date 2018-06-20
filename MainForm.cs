@@ -1,40 +1,39 @@
-﻿using System;
+﻿using CSCore.Codecs.WAV;
+using CSCore.SoundIn;
+using System;
 using System.Collections.Generic;
-using System.Drawing;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Forms;
 using Un4seen.Bass;
-using Un4seen.Bass.AddOn.Tags;
-using System.Runtime.InteropServices;
-using System.Reflection;
-using CSCore.SoundIn;
-using CSCore.Codecs.WAV;
-using System.Threading;
-using aPlay;
+using WasapiLoopbackCapture = CSCore.SoundIn.WasapiLoopbackCapture;
 
 namespace Player
 {
     public partial class MainForm : Form
     {
-        public static int stream = 0;
+        public static int Stream = 0;
 
-        bool stopped = true;
-        bool paused = false;
-        bool scrubbing = false;
-        int activeTrack = 0;
+        private bool _stopped = true;
+        private bool _paused;
+        private bool _scrubbing;
+        private int _activeTrack = 0;
 
-        public static List<string> supportedExts = new List<string>();
+        public static readonly List<string> SupportedExts = new List<string>();
 
-        List<PlaylistItem> list = new List<PlaylistItem>();
+        private readonly List<PlaylistItem> _list = new List<PlaylistItem>();
 
-        Visualizations visForm = new Visualizations();
+        private Visualizations _visForm = new Visualizations();
 
-        string[] args = Environment.GetCommandLineArgs();
+        private readonly string[] _args = Environment.GetCommandLineArgs();
 
-        IntPtr userAgentPtr;
-        IntPtr proxyPtr;
-        private WasapiLoopbackCapture capture;
-        private WaveWriter w;
-        KeyboardHook keyHook = new KeyboardHook();
+        private IntPtr _userAgentPtr;
+        private IntPtr _proxyPtr;
+        private WasapiLoopbackCapture _capture;
+        private WaveWriter _w;
+        private readonly KeyboardHook _keyHook = new KeyboardHook();
 
         public MainForm()
         {
@@ -45,25 +44,25 @@ namespace Player
             ProcessCmdLine();
 
             Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_NET_PLAYLIST, 1);
-            keyHook.KeyPressed += KeyHook_KeyPressed;
-            keyHook.RegisterHotKey(Player.ModifierKeys.Alt, Keys.P);
+            _keyHook.KeyPressed += KeyHook_KeyPressed;
+            _keyHook.RegisterHotKey(Player.ModifierKeys.Alt, Keys.P);
             
         }
 
         private void KeyHook_KeyPressed(object sender, KeyPressedEventArgs e)
         {
-            if (stopped)
+            if (_stopped)
                 Play();
-            else if (paused)
+            else if (_paused)
                 Resume();
-            else if (!stopped && !paused)
+            else if (!_stopped && !_paused)
                 Pause();
         }
 
         private void BuildFilter() //build the filter string for openFileDialog
         {
-            supportedExts.AddRange(Bass.SupportedStreamExtensions.Split(';'));
-            supportedExts.AddRange(Bass.SupportedMusicExtensions.Split(';'));
+            SupportedExts.AddRange(Bass.SupportedStreamExtensions.Split(';'));
+            SupportedExts.AddRange(Bass.SupportedMusicExtensions.Split(';'));
             
             //foreach (KeyValuePair<int, string> item in Bass.BASS_PluginLoadDirectory("plugins"))
             //{
@@ -75,25 +74,25 @@ namespace Player
             //    }
             //}
             
-            string filter = "All files (*.*)|*.*|";
-            for (int i = 0; i < supportedExts.Count; i++)
-                filter += supportedExts[i].Replace("*.", "") + " files (" + supportedExts[i] + ")|" + supportedExts[i] + ((i == supportedExts.Count - 1) ? "" : "|");
+            var filter = "All files (*.*)|*.*|";
+            for (var i = 0; i < SupportedExts.Count; i++)
+                filter += SupportedExts[i].Replace("*.", "") + " files (" + SupportedExts[i] + ")|" + SupportedExts[i] + ((i == SupportedExts.Count - 1) ? "" : "|");
 
             openFileDialog.Filter = filter;
         }
 
         private void BuildUserAgent() //build the user agent string for playing urls
         {
-            string agent = "";
-            object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
+            var agent = "";
+            var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
             if (attributes.Length > 0)
             {
-                AssemblyTitleAttribute titleAttribute = (AssemblyTitleAttribute)attributes[0];
+                var titleAttribute = (AssemblyTitleAttribute)attributes[0];
                 if (titleAttribute.Title != "")
                     agent += titleAttribute.Title + " ";
             }
 
-            agent += Assembly.GetExecutingAssembly().GetName().Version.ToString() + " ";
+            agent += Assembly.GetExecutingAssembly().GetName().Version + " ";
 
             attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false);
             if (attributes.Length > 0)
@@ -102,29 +101,29 @@ namespace Player
             }
 
             agent = agent.Replace("©", "");
-            userAgentPtr = Marshal.StringToHGlobalAnsi(agent); //can't use StringToHGlobalUni for user agent :(
+            _userAgentPtr = Marshal.StringToHGlobalAnsi(agent); //can't use StringToHGlobalUni for user agent :(
 
-            Bass.BASS_SetConfigPtr(BASSConfig.BASS_CONFIG_NET_AGENT, userAgentPtr);
+            Bass.BASS_SetConfigPtr(BASSConfig.BASS_CONFIG_NET_AGENT, _userAgentPtr);
         }
 
         private void ProcessCmdLine()
         {
-            if (args.Length < 2) return;
+            if (_args.Length < 2) return;
 
-            if (new System.IO.FileInfo(args[1]).Extension == ".xspf")
+            if (new System.IO.FileInfo(_args[1]).Extension == ".xspf")
             {
-                List<PlaylistItem> loaded = XSPF.Load(args[1]);
+                var loaded = XSPF.Load(_args[1]);
 
                 if (loaded.Count != 0)
                 {
-                    foreach (PlaylistItem p in loaded)
+                    foreach (var p in loaded)
                         AddToPlaylist(p);
                 }
             }
             else
             {
-                for (int i = 1; i < args.Length; i++) //skip the first argument, it's just the exe
-                    AddToPlaylist(XSPF.GetTags(args[i]));
+                for (var i = 1; i < _args.Length; i++) //skip the first argument, it's just the exe
+                    AddToPlaylist(XSPF.GetTags(_args[i]));
             }
             
             Play();
@@ -132,27 +131,33 @@ namespace Player
 
         private void Play()
         {
-            if (list.Count == 0) return;
+            if (_list.Count == 0) return;
 
-            if (activeTrack > list.Count - 1)
-                activeTrack = list.Count - 1;
-
-            if (list[activeTrack].Type == PlaylistItem.TYPE_MUSIC)
-                stream = Bass.BASS_MusicLoad(list[activeTrack].Path, 0, 0, BASSFlag.BASS_MUSIC_FLOAT | BASSFlag.BASS_MUSIC_PRESCAN, 0);
-            else if (list[activeTrack].Type == PlaylistItem.TYPE_STREAM_URL) { 
-                stream = Bass.BASS_StreamCreateURL(list[activeTrack].Path, 0, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_STATUS, null, IntPtr.Zero); wmp.URL = "http://portal.onlineiptv.net:5210/live/fNOaPbcqCB/yttnwNGpCR/1599.ts"; }
-                
-            else
-                stream = Bass.BASS_StreamCreateFile(list[activeTrack].Path, 0, 0, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_PRESCAN);
-
-            if (stream != 0)
+            if (_activeTrack > _list.Count - 1)
+                _activeTrack = _list.Count - 1;
+            switch (_list[_activeTrack].Type)
             {
-                Bass.BASS_ChannelPlay(stream, true);
+                case PlaylistItem.TYPE_MUSIC:
+                    Stream = Bass.BASS_MusicLoad(_list[_activeTrack].Path, 0, 0, BASSFlag.BASS_MUSIC_FLOAT | BASSFlag.BASS_MUSIC_PRESCAN, 0);
+                    break;
+                case PlaylistItem.TYPE_STREAM_URL:
+                    Stream = Bass.BASS_StreamCreateURL(_list[_activeTrack].Path, 0, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_STATUS, null, IntPtr.Zero);
+                    //wmp.URL = "http://portal.onlineiptv.net:5210/live/fNOaPbcqCB/yttnwNGpCR/1599.ts"; 
+                    break;
+                default:
+                    Stream = Bass.BASS_StreamCreateFile(_list[_activeTrack].Path, 0, 0, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_PRESCAN 
+                        | BASSFlag.BASS_AAC_STEREO);
+                    break;
+            }
 
-                stopped = false;
-                paused = false;
+            if (Stream != 0)
+            {
+                Bass.BASS_ChannelPlay(Stream, true);
 
-                if (list[activeTrack].Type == PlaylistItem.TYPE_STREAM_URL)
+                _stopped = false;
+                _paused = false;
+
+                if (_list[_activeTrack].Type == PlaylistItem.TYPE_STREAM_URL)
                 {
                     trkPos.Enabled = false;
                     chkRepeatTrack.Enabled = chkRepeatAll.Enabled = chkRandom.Enabled = false;
@@ -162,54 +167,57 @@ namespace Player
                 {
                     trkPos.Enabled = true;
                     chkRepeatTrack.Enabled = chkRepeatAll.Enabled = chkRandom.Enabled = true;
-                    trkPos.Maximum = (int)Bass.BASS_ChannelBytes2Seconds(stream, Bass.BASS_ChannelGetLength(stream));
+                    trkPos.Maximum = (int)Bass.BASS_ChannelBytes2Seconds(Stream, Bass.BASS_ChannelGetLength(Stream));
                 }
 
                 timer.Start();
-                if (list[activeTrack].Type == PlaylistItem.TYPE_STREAM_URL) tagTimer.Start();
+                if (_list[_activeTrack].Type == PlaylistItem.TYPE_STREAM_URL) tagTimer.Start();
                 btnStop.Enabled = true;
 
-                lblTag.Text = list[activeTrack].Artist.Replace("&", "&&") + " - " + list[activeTrack].Title.Replace("&", "&&"); //escape ampersands (no keyboard shortcuts)
-                Text = "Player | " + list[activeTrack].Artist + " - " + list[activeTrack].Title;
+                lblTag.Text = _list[_activeTrack].Artist.Replace("&", "&&") + " - " + _list[_activeTrack].Title.Replace("&", "&&"); //escape ampersands (no keyboard shortcuts)
+                if (_list[_activeTrack].Artist != null)
+                {
+                    Text = $@"Player |  {_list[_activeTrack].Artist} - + {_list[_activeTrack].Title}";
+                }
 
-                if (visForm.Visible && !visForm.IsDisposed)
-                    visForm.timer.Start();
+                if (_visForm.Visible && !_visForm.IsDisposed)
+                    _visForm.timer.Start();
 
                 btnPlay.Image = Properties.Resources.control_pause_blue;
             } 
             else
             {
-                MessageBox.Show(string.Format("Stream Error: {0}", Bass.BASS_ErrorGetCode()), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($@"Stream Error: {Bass.BASS_ErrorGetCode()}", @"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void Pause()
         {
-            Bass.BASS_ChannelPause(stream);
+            Bass.BASS_ChannelPause(Stream);
             if (tagTimer.Enabled) tagTimer.Stop();
             timer.Stop();
-            if (visForm.Visible && !visForm.IsDisposed)
-                visForm.Stop();
-            paused = true;
-            btnPlay.Image = (Image)Properties.Resources.control_play_blue;
+            if (_visForm.Visible && !_visForm.IsDisposed)
+                _visForm.Stop();
+            _paused = true;
+            btnPlay.Image = Properties.Resources.control_play_blue;
         }
 
         private void Resume()
         {
-            Bass.BASS_ChannelPlay(stream, false);
+            Bass.BASS_ChannelPlay(Stream, false);
             timer.Start();
-            if (list[activeTrack].Type == PlaylistItem.TYPE_STREAM_URL) tagTimer.Start();
-            if (visForm.Visible && !visForm.IsDisposed)
-                visForm.timer.Start();
-            paused = false;
+            if (_list[_activeTrack].Type == PlaylistItem.TYPE_STREAM_URL) tagTimer.Start();
+            if (_visForm.Visible && !_visForm.IsDisposed)
+                _visForm.timer.Start();
+            _paused = false;
             btnPlay.Image = Properties.Resources.control_pause_blue;
         }
 
         private void Stop()
         {
-            stopped = true;
+            _stopped = true;
 
-            Bass.BASS_ChannelStop(stream);
+            Bass.BASS_ChannelStop(Stream);
 
             if (tagTimer.Enabled) tagTimer.Stop();
             timer.Stop();
@@ -217,70 +225,77 @@ namespace Player
             trkPos.Enabled = false;
             trkPos.Value = 0;
 
-            lblTag.Text = "Idle";
-            Text = "Player";
+            lblTag.Text = @"Idle";
+            Text = @"Player";
             lblPos.Text = "-/-";
 
-            if (visForm.Visible && !visForm.IsDisposed)
-                visForm.Stop();
+            if (_visForm.Visible && !_visForm.IsDisposed)
+                _visForm.Stop();
 
             btnPlay.Image = Properties.Resources.control_play_blue;
         }
 
         private void GetTags()
         {
-            PlaylistItem item = XSPF.GetTags(list[activeTrack].Path);
+            var item = XSPF.GetTags(_list[_activeTrack].Path);
 
-            list[activeTrack].ListViewItem.SubItems[1].Text = item.Title;
-            list[activeTrack].ListViewItem.SubItems[2].Text = item.Artist;
-            list[activeTrack].ListViewItem.SubItems[3].Text = item.Album;
+            _list[_activeTrack].ListViewItem.SubItems[1].Text = item.Title;
+            _list[_activeTrack].ListViewItem.SubItems[2].Text = item.Artist;
+            _list[_activeTrack].ListViewItem.SubItems[3].Text = item.Album;
 
             lblTag.Text = item.Artist.Replace("&", "&&") + " - " + item.Title.Replace("&", "&&"); //escape ampersands (no keyboard shortcuts)
-            Text = "Player | " + item.Artist + " - " + item.Title;
+            if (item.Artist != null || item.Album != null)
+            {
+                Text = $@"Player | {item.Artist} - {item.Title}";
+            }
+            else
+            {
+                Text = @"Player ";
+            }
         }
 
         private void btnPlay_Click(object sender, EventArgs e)
         {
             //StartRecording("google.wav");
-            if (stopped)
+            if (_stopped)
                 Play();
-            else if (paused)
+            else if (_paused)
                 Resume();
-            else if (!stopped && !paused)
+            else if (!_stopped && !_paused)
                 Pause();
         }
 
         private void btnStop_Click(object sender, EventArgs e)
         {
-            if (stopped) return;
+            if (_stopped) return;
 
             Stop();
         }
 
         private void btnPrevious_Click(object sender, EventArgs e)
         {
-            if (stopped || list.Count == 0) return;
+            if (_stopped || _list.Count == 0) return;
             
             Stop();
 
-            if (activeTrack == 0)
-                activeTrack = list.Count - 1;
+            if (_activeTrack == 0)
+                _activeTrack = _list.Count - 1;
             else
-                activeTrack--;
+                _activeTrack--;
 
             Play();
         }
 
         private void btnNext_Click(object sender, EventArgs e)
         {
-            if (stopped || list.Count == 0) return;
+            if (_stopped || _list.Count == 0) return;
             
             Stop();
 
-            if (activeTrack == list.Count - 1)
-                activeTrack = 0;
+            if (_activeTrack == _list.Count - 1)
+                _activeTrack = 0;
             else
-                activeTrack++;
+                _activeTrack++;
 
             Play();
         }
@@ -288,70 +303,69 @@ namespace Player
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             Stop();
-            Marshal.FreeHGlobal(userAgentPtr);
-            Marshal.FreeHGlobal(proxyPtr);
+            Marshal.FreeHGlobal(_userAgentPtr);
+            Marshal.FreeHGlobal(_proxyPtr);
         }
 
         private void timer_Tick(object sender, EventArgs e)
         {
-            if (activeTrack > list.Count - 1)
-                activeTrack = list.Count - 1;
+            if (_activeTrack > _list.Count - 1)
+                _activeTrack = _list.Count - 1;
             
-            if (Bass.BASS_ChannelIsActive(stream) == BASSActive.BASS_ACTIVE_STOPPED && list[activeTrack].Type != PlaylistItem.TYPE_STREAM_URL)
+            if (Bass.BASS_ChannelIsActive(Stream) == BASSActive.BASS_ACTIVE_STOPPED && _list[_activeTrack].Type != PlaylistItem.TYPE_STREAM_URL)
                 ShouldPlayNext();
             
             string length = null;
             double lSecsD = -1;
 
-            if (list[activeTrack].Type != PlaylistItem.TYPE_STREAM_URL)
+            if (_list[_activeTrack].Type != PlaylistItem.TYPE_STREAM_URL)
             {
-                lSecsD = Bass.BASS_ChannelBytes2Seconds(stream, Bass.BASS_ChannelGetLength(stream));
+                lSecsD = Bass.BASS_ChannelBytes2Seconds(Stream, Bass.BASS_ChannelGetLength(Stream));
 
-                int lHrs = (int)Math.Floor(lSecsD / 3600);
-                int lMins = (int)Math.Floor((lSecsD % 3600) / 60);
-                int lSecs = (int)lSecsD % 60;
+                var lHrs = (int)Math.Floor(lSecsD / 3600);
+                var lMins = (int)Math.Floor(lSecsD % 3600 / 60);
+                var lSecs = (int)lSecsD % 60;
 
-                length = string.Format("{0}{1}:{2}", ((lHrs == 0) ? "" : lHrs + ":"), lMins.ToString("00"), lSecs.ToString("00"));
+                length = $"{(lHrs == 0 ? "" : lHrs + ":")}{lMins:00}:{lSecs:00}";
             }
             
-            double pSecsD = Bass.BASS_ChannelBytes2Seconds(stream, Bass.BASS_ChannelGetPosition(stream));
+            var pSecsD = Bass.BASS_ChannelBytes2Seconds(Stream, Bass.BASS_ChannelGetPosition(Stream));
 
-            if (!scrubbing && list[activeTrack].Type != PlaylistItem.TYPE_STREAM_URL)
+            if (!_scrubbing && _list[_activeTrack].Type != PlaylistItem.TYPE_STREAM_URL)
             {
-                if (list[activeTrack].Type == PlaylistItem.TYPE_MUSIC && pSecsD >= lSecsD)
+                if (_list[_activeTrack].Type == PlaylistItem.TYPE_MUSIC && pSecsD >= lSecsD)
                     ShouldPlayNext();
                 else
                     trkPos.Value = (int)pSecsD;
             }
 
-            int pHrs = (int)Math.Floor(pSecsD / 3600);
-            int pMins = (int)Math.Floor((pSecsD % 3600) / 60);
-            int pSecs = (int)pSecsD % 60;
+            var pHrs = (int)Math.Floor(pSecsD / 3600);
+            var pMins = (int)Math.Floor(pSecsD % 3600 / 60);
+            var pSecs = (int)pSecsD % 60;
 
-            string pos = string.Format("{0}{1}:{2}", ((pHrs == 0) ? "" : pHrs + ":"), pMins.ToString("00"), pSecs.ToString("00"));
+            var pos = $"{(pHrs == 0 ? "" : pHrs + ":")}{pMins:00}:{pSecs:00}";
 
-            if (list[activeTrack].Type == PlaylistItem.TYPE_STREAM_URL)
-                lblPos.Text = pos;
-            else
-                lblPos.Text = pos + "/" + length;
+            lblPos.Text = _list[_activeTrack].Type == PlaylistItem.TYPE_STREAM_URL ? pos : $@"{pos}/{length}";
         }
 
         private void ShouldPlayNext()
         {
             if (chkRepeatTrack.Checked)
-                    Bass.BASS_ChannelPlay(stream, true);
+            {
+                Bass.BASS_ChannelPlay(Stream, true);
+            }
             else if (chkRandom.Checked)
             {
                 Stop();
-                activeTrack = new Random().Next(list.Count - 1);
+                _activeTrack = new Random().Next(_list.Count - 1);
                 Play();
             }
-            else if (activeTrack == list.Count - 1)
+            else if (_activeTrack == _list.Count - 1)
             {
                 if (chkRepeatAll.Checked)
                 {
                     Stop();
-                    activeTrack = 0;
+                    _activeTrack = 0;
                     Play();
                 }
                 else
@@ -360,7 +374,7 @@ namespace Player
             else
             {
                 Stop();
-                activeTrack++;
+                _activeTrack++;
                 Play();
             }
         }
@@ -372,28 +386,27 @@ namespace Player
 
         private void trkVol_Scroll(object sender, EventArgs e)
         {
-            if (list.Count == 0) return;
-            if (list[activeTrack].Type == PlaylistItem.TYPE_MUSIC)
-                Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_GVOL_MUSIC, trkVol.Value);
-            else
-                Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_GVOL_STREAM, trkVol.Value);
+            if (_list.Count == 0) return;
+            Bass.BASS_SetConfig(
+                _list[_activeTrack].Type == PlaylistItem.TYPE_MUSIC
+                    ? BASSConfig.BASS_CONFIG_GVOL_MUSIC
+                    : BASSConfig.BASS_CONFIG_GVOL_STREAM, trkVol.Value);
         }
 
         private void trkPos_MouseDown(object sender, MouseEventArgs e)
         {
-            scrubbing = true;
+            _scrubbing = true;
         }
 
         private void trkPos_MouseUp(object sender, MouseEventArgs e)
         {
-            scrubbing = false;
+            _scrubbing = false;
         }
 
         private void trkPos_Scroll(object sender, EventArgs e)
         {
-            if (!scrubbing) return;
-
-            Bass.BASS_ChannelSetPosition(stream, (double)trkPos.Value);
+            if (!_scrubbing) return;
+            Bass.BASS_ChannelSetPosition(Stream, (double)trkPos.Value);
         }
 
         private void addFilesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -401,27 +414,24 @@ namespace Player
             if (openFileDialog.ShowDialog() != DialogResult.OK)
                 return;
 
-            foreach (string f in openFileDialog.FileNames)
+            foreach (var f in openFileDialog.FileNames)
                 AddToPlaylist(XSPF.GetTags(f));
 
-            if (stopped)
+            if (_stopped)
                 Play();
         }
 
         private void addUrlToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AddUrlForm form = new AddUrlForm();
+            var form = new AddUrlForm();
             
-            if (form.ShowDialog() != DialogResult.OK)
-                return;
+            if (form.ShowDialog() != DialogResult.OK) return;
 
-            if (!stopped)
-                Stop();
+            if (!_stopped) Stop();
 
             AddToPlaylist(XSPF.GetTags(form.path));
 
-            if (stopped)
-                Play();
+            if (_stopped) Play();
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -431,27 +441,26 @@ namespace Player
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AboutBox about = new AboutBox();
-            about.ShowDialog();
+            MessageBox.Show("Player plays audio files using bass.net lib. \nWritten in VB.Net. Created By SajjadJaved.\nfor Updates: https://github.com/sajjad0321/Player", Application.ProductName,MessageBoxButtons.OK,MessageBoxIcon.Information);
         }
 
         private void toggleVisualsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (visForm.Visible)
+            if (_visForm.Visible)
             {
-                visForm.Stop();
-                visForm.Close();
+                _visForm.Stop();
+                _visForm.Close();
             }
-            else if (visForm.IsDisposed)
+            else if (_visForm.IsDisposed)
             {
-                visForm = new Visualizations();
-                visForm.Show();
-                visForm.timer.Start();
+                _visForm = new Visualizations();
+                _visForm.Show();
+                _visForm.timer.Start();
             }
             else
             {
-                visForm.Show();
-                visForm.timer.Start();
+                _visForm.Show();
+                _visForm.timer.Start();
             }
         }
 
@@ -460,23 +469,23 @@ namespace Player
             if (openPlaylistDialog.ShowDialog() != DialogResult.OK)
                 return;
 
-            List<PlaylistItem> loaded = XSPF.Load(openPlaylistDialog.FileName);
+            var loaded = XSPF.Load(openPlaylistDialog.FileName);
 
             if (loaded.Count == 0) return;
             
-            list.Clear();
+            _list.Clear();
             lstPlaylist.Items.Clear();
             
-            foreach (PlaylistItem p in loaded)
+            foreach (var p in loaded)
                 AddToPlaylist(p);
         }
 
         private void savePlaylistToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (list.Count == 0 || savePlaylistDialog.ShowDialog() != DialogResult.OK)
+            if (_list.Count == 0 || savePlaylistDialog.ShowDialog() != DialogResult.OK)
                 return;
 
-            XSPF.Save(savePlaylistDialog.FileName, list);
+            XSPF.Save(savePlaylistDialog.FileName, _list);
         }
 
         private void AddToPlaylist(PlaylistItem p)
@@ -493,36 +502,32 @@ namespace Player
 
             lstPlaylist.Items.Add(p.ListViewItem);
 
-            list.Add(p);
+            _list.Add(p);
         }
 
         private void RemoveFromPlaylist(PlaylistItem p)
         {
             lstPlaylist.Items.Remove(p.ListViewItem);
-            list.Remove(p);
-            if (activeTrack > list.Count - 1)
-                activeTrack = list.Count - 1;
+            _list.Remove(p);
+            if (_activeTrack > _list.Count - 1)
+                _activeTrack = _list.Count - 1;
         }
 
         private PlaylistItem GetPlaylistItem(ListViewItem i)
         {
-            foreach (PlaylistItem p in list) //surely there's a better way of doing this than looping through all entries
-                if (p.ListViewItem == i)
-                    return p;
-
-            return null;
+            return _list.FirstOrDefault(p => p.ListViewItem == i);
         }
 
         private void removeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (lstPlaylist.SelectedItems.Count == 0) return;
 
-            if (lstPlaylist.SelectedItems.Contains(list[activeTrack].ListViewItem))
+            if (lstPlaylist.SelectedItems.Contains(_list[_activeTrack].ListViewItem))
                 Stop();
 
             foreach (ListViewItem i in lstPlaylist.SelectedItems)
             {
-                PlaylistItem item = GetPlaylistItem(i);
+                var item = GetPlaylistItem(i);
                 if (item != null)
                     RemoveFromPlaylist(item);
             }
@@ -530,42 +535,37 @@ namespace Player
 
         private void clearToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!stopped)
+            if (!_stopped)
                 Stop();
             
             lstPlaylist.Items.Clear();
-            list.Clear();
+            _list.Clear();
 
-            activeTrack = 0;
+            _activeTrack = 0;
         }
 
         private void lstPlaylist_DoubleClick(object sender, EventArgs e)
         {
             if (lstPlaylist.SelectedItems.Count != 1) return;
 
-            if (!stopped)
+            if (!_stopped)
                 Stop();
-            activeTrack = lstPlaylist.SelectedIndices[0];
+            _activeTrack = lstPlaylist.SelectedIndices[0];
             Play();
         }
 
         private void lstPlaylist_DragEnter(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-                e.Effect = DragDropEffects.Copy;
-            else
-                e.Effect = DragDropEffects.None;
+            e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
         }
 
         private void lstPlaylist_DragDrop(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
+            var files = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
-                foreach (string file in files)
-                    AddToPlaylist(XSPF.GetTags(file));
-            }
+            foreach (var file in files)
+                AddToPlaylist(XSPF.GetTags(file));
         }
 
         private void lstPlaylist_DragOver(object sender, DragEventArgs e)
@@ -583,21 +583,27 @@ namespace Player
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int prevDevice = Properties.Settings.Default.Device;
-            
-            if (new SettingsForm().ShowDialog() != DialogResult.OK)
-                return;
-
-            proxyPtr = Marshal.StringToHGlobalAnsi(Properties.Settings.Default.Proxy);
-
-            Bass.BASS_SetConfigPtr(BASSConfig.BASS_CONFIG_NET_PROXY, proxyPtr);
-
-            if (prevDevice != Properties.Settings.Default.Device)
+            var prevDevice = Properties.Settings.Default.Device;
+            var ss = SettingsForm.Instance.IsDisposed;
+            if (ss)
             {
-                Stop();
-                Program.init(); //reinitialise BASS on the new device
-                Play();
+                new SettingsForm().Show();
             }
+            else
+            {
+                SettingsForm.Instance.Show();
+            }
+//            if (new SettingsForm().ShowDialog() != DialogResult.OK)
+//                return;
+
+            _proxyPtr = Marshal.StringToHGlobalAnsi(Properties.Settings.Default.Proxy);
+
+            Bass.BASS_SetConfigPtr(BASSConfig.BASS_CONFIG_NET_PROXY, _proxyPtr);
+
+            if (prevDevice == Properties.Settings.Default.Device) return;
+            Stop();
+            Program.init(); //reinitialize BASS on the new device
+            Play();
         }
 
         private void lstPlaylist_SelectedIndexChanged(object sender, EventArgs e)
@@ -610,62 +616,99 @@ namespace Player
 
         private void MainForm_SizeChanged(object sender, EventArgs e)
         {
-            if (WindowState == FormWindowState.Minimized)
-            {
-                notifyIcon1.Visible = true;
-                Hide();
-            }
+            if (WindowState != FormWindowState.Minimized) return;
+            notifyIcon1.Visible = true;
+            Hide();
         }
 
-        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void CaptureAudio(string name = "test.wav")
         {
-            notifyIcon1.Visible = false;
-            Show();
+            _capture = new WasapiLoopbackCapture();
+            _capture.Initialize();
+            _w = new WaveWriter(name, _capture.WaveFormat);
+            _capture.DataAvailable += CaptureOnDataAvailable;
+            _capture.Start();
         }
 
-        public void CaptureAudio(string Name)
+        private void CaptureOnDataAvailable(object sender, DataAvailableEventArgs dataAvailableEventArgs)
         {
-            capture = new WasapiLoopbackCapture();
-            capture.Initialize();
-            w = new WaveWriter(Name, capture.WaveFormat);
-            capture.DataAvailable += (s, capData) =>
-            {
-                w.Write(capData.Data, capData.Offset, capData.ByteCount);
-            };
-            capture.Start();
-            Thread.Sleep(4000);
-            capture.Stop();
+            _w.Write(dataAvailableEventArgs.Data, dataAvailableEventArgs.Offset, dataAvailableEventArgs.ByteCount);
         }
 
         private static void CaptureG(int index)
         {
-            string Name = string.Format("dump-{0}.wav", index);
+            var name = $"dump-{index}.wav";
 
-            using (WasapiCapture capture = new WasapiLoopbackCapture())
-            {
-                capture.Initialize();
-                using (var w = new WaveWriter(Name, capture.WaveFormat))
-                {
-                    capture.DataAvailable += (s, capData) => w.Write(capData.Data, capData.Offset, capData.ByteCount);
-                    capture.Start();
+            //using (WasapiCapture capture = new WasapiLoopbackCapture())
+            //{
+            //    capture.Initialize();
+            //    using (var w = new WaveWriter(Name, capture.WaveFormat))
+            //    {
+            //        capture.DataAvailable += (s, capData) => w.Write(capData.Data, capData.Offset, capData.ByteCount);
+            //        capture.Start();
 
-                    Thread.Sleep(10000);
+            //        Thread.Sleep(10000);
 
-                    capture.Stop();
-                }
-            }
+            //        capture.Stop();
+            //    }
+            //}
         }
 
-        public void StartRecording(string Name)
+        public void StartRecording(string name)
         {
-            new Thread(delegate () { CaptureAudio(Name); }).Start();
+            new Thread(delegate () { CaptureAudio(name); }).Start();
         }
 
         public void StopCapture()
         {
-            capture.Stop();
-            capture.Dispose();
-            w.Dispose();
+            //capture.Stop();
+            //capture.Dispose();
+            //w.Dispose();
+        }
+
+        private void loopbackToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (loopbackToolStripMenuItem.Checked)
+            {
+                CaptureAudio();
+            }
+            else
+            {
+                _capture.Stop();
+            }
+//            var wavein = new WasapiCapture();
+//            if (loopbackToolStripMenuItem.Checked == true)
+//            {
+//                var provider = new BufferedWaveProvider(wavein.WaveFormat);
+//                var vpro = new VolumeSampleProvider(provider.ToSampleProvider());
+//                var wout = new WasapiOut(AudioClientShareMode.Shared, 0);
+//                var filter = BiQuadFilter.HighPassFilter(44000, 200, 1);
+//
+//                wout.Init(vpro);
+//                wout.Play();
+//                wavein.StartRecording();
+//
+//                wavein.DataAvailable += delegate (object send, WaveInEventArgs ee)
+//                {
+//                    for (var i = 0; i < ee.BytesRecorded; i += 4)
+//                    {
+//                        var trans = BitConverter.GetBytes(filter.Transform(BitConverter.ToSingle(ee.Buffer, i)));
+//                        Buffer.BlockCopy(trans, 0, ee.Buffer, i, 4);
+//                    }
+//                    provider.AddSamples(ee.Buffer, 0, ee.BytesRecorded);
+//
+//                    //    //vpro.Volume = .8f * ReverbIntensity;
+//                    };
+//                } else
+//            {
+//                wavein.StopRecording();
+//            }
+        }
+
+        private void notifyIcon1_MouseClick(object sender, MouseEventArgs e)
+        {
+            notifyIcon1.Visible = false;
+            Show();
         }
     }
 }

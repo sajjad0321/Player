@@ -14,8 +14,9 @@ namespace Player
         static void Main()
         {
             //passing a path argument sets the working directory of the exe to that file's directory; bypass it
-            Directory.SetCurrentDirectory(Application.ExecutablePath.Replace(Path.GetFileName(Application.ExecutablePath), ""));
-            
+            Directory.SetCurrentDirectory(
+                Application.ExecutablePath.Replace(Path.GetFileName(Application.ExecutablePath), ""));
+
             if (!File.Exists("bass.dll"))
             {
                 MessageBox.Show("bass.dll not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -23,7 +24,9 @@ namespace Player
             }
 
             if (Properties.Settings.Default.RegEmail == "" || Properties.Settings.Default.RegCode == "")
-                MessageBox.Show("You haven't set your BASS.NET registration details. A splash screen will be shown.\nYou can set details in app.config.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(
+                    "You haven't set your BASS.NET registration details. A splash screen will be shown.\nYou can set details in app.config.",
+                    "Info", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
             BassNet.Registration(Properties.Settings.Default.RegEmail, Properties.Settings.Default.RegCode);
 
@@ -37,7 +40,8 @@ namespace Player
             }
             else
             {
-                MessageBox.Show("Init error: " + Bass.BASS_ErrorGetCode(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Init error: " + Bass.BASS_ErrorGetCode(), "Error", MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
 
